@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lenguajes de Marcas — CE1.1 y CE1.2</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f1a;
+    --surface: #161824;
+    --card: #1e2235;
+    --accent: #7c6fff;
+    --accent2: #00d4aa;
+    --accent3: #ff6b6b;
+    --amber: #f5a623;
+    --text: #e8eaf6;
+    --muted: #8b90b8;
+    --border: rgba(124,111,255,0.2);
+    --code-bg: #0a0c14;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Lora', serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(13,15,26,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; color: var(--accent); letter-spacing: 0.05em; }
+  .nav-pills { display: flex; gap: 4px; }
+  .nav-pill {
+    font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 700;
+    padding: 5px 12px; border-radius: 20px;
+    background: transparent; border: 1px solid transparent;
+    color: var(--muted); cursor: pointer; transition: all 0.2s; text-decoration: none;
+  }
+  .nav-pill:hover, .nav-pill.active { color: var(--text); background: var(--card); border-color: var(--border); }
+
+  /* SLIDES */
+  section { min-height: 100vh; padding: 80px 2rem 4rem; display: flex; flex-direction: column; justify-content: center; max-width: 1000px; margin: 0 auto; }
+
+  /* SLIDE 0 — HERO */
+  .hero { text-align: center; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Syne', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em;
+    color: var(--accent2); background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.3);
+    padding: 6px 16px; border-radius: 20px; margin-bottom: 2rem;
+  }
+  .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.5rem, 7vw, 5rem); font-weight: 800; line-height: 1.05; margin-bottom: 1.5rem; }
+  .hero h1 span { color: var(--accent); }
+  .hero-sub { font-size: 1.15rem; color: var(--muted); max-width: 540px; margin: 0 auto 2.5rem; line-height: 1.7; }
+  .hero-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.05em; padding: 12px 24px; border-radius: 8px; cursor: pointer; text-decoration: none; transition: all 0.2s; border: none; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #6b5eef; transform: translateY(-1px); }
+  .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-outline:hover { background: var(--card); }
+  .hero-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-top: 3rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+  .hero-chip {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .chip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .chip-dot.purple { background: var(--accent); }
+  .chip-dot.teal { background: var(--accent2); }
+  .chip-dot.red { background: var(--accent3); }
+  .chip-dot.amber { background: var(--amber); }
+
+  /* SECTION HEADERS */
+  .section-tag { font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.75rem; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
+  .section-desc { font-size: 1.05rem; color: var(--muted); line-height: 1.7; max-width: 620px; margin-bottom: 2.5rem; }
+
+  /* ESTRUCTURA CARD */
+  .tree-container { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; font-family: 'DM Mono', monospace; font-size: 0.85rem; line-height: 2; position: relative; overflow: hidden; }
+  .tree-container::before { content: '●  ●  ●'; position: absolute; top: 14px; left: 18px; color: var(--muted); font-size: 0.7rem; letter-spacing: 6px; }
+  .tree-line { display: flex; align-items: baseline; gap: 0; padding: 1px 0; cursor: default; transition: all 0.15s; border-radius: 4px; }
+  .tree-line:hover { background: rgba(124,111,255,0.08); }
+  .indent-1 { padding-left: 1.5rem; }
+  .indent-2 { padding-left: 3rem; }
+  .indent-3 { padding-left: 4.5rem; }
+  .t-tag { color: var(--accent3); }
+  .t-attr { color: var(--amber); }
+  .t-val  { color: var(--accent2); }
+  .t-comment { color: var(--muted); font-style: italic; }
+  .t-text { color: var(--text); }
+  .t-key { color: var(--accent); }
+  .t-bracket { color: #7dd3fc; }
+
+  .tree-tooltip {
+    position: absolute; background: var(--card); border: 1px solid var(--accent); border-radius: 8px;
+    padding: 10px 14px; font-family: 'Lora', serif; font-size: 0.8rem; color: var(--text);
+    pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 10;
+    max-width: 220px; line-height: 1.5; white-space: normal;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+
+  /* ETIQUETAS GRID */
+  .tags-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .tag-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .tag-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .tag-card.active { border-color: var(--accent); background: rgba(124,111,255,0.08); }
+  .tag-label { font-family: 'DM Mono', monospace; font-size: 1rem; color: var(--accent3); margin-bottom: 0.4rem; }
+  .tag-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; color: var(--text); margin-bottom: 0.5rem; }
+  .tag-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+  .tag-example { margin-top: 0.75rem; display: none; }
+  .tag-card.active .tag-example { display: block; }
+  .mini-code { background: var(--code-bg); border-radius: 6px; padding: 8px 12px; font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--accent2); border: 1px solid rgba(0,212,170,0.2); }
+
+  /* ATRIBUTOS */
+  .attr-visual { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
+  .attr-list { display: flex; flex-direction: column; gap: 10px; }
+  .attr-item {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .attr-item:hover, .attr-item.sel { border-color: var(--accent2); }
+  .attr-item.sel { background: rgba(0,212,170,0.07); }
+  .attr-head { display: flex; align-items: center; gap: 10px; }
+  .attr-tag { font-family: 'DM Mono', monospace; font-size: 0.82rem; background: rgba(245,166,35,0.15); color: var(--amber); padding: 2px 8px; border-radius: 4px; }
+  .attr-title-text { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; }
+  .attr-preview {
+    background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem;
+    font-family: 'DM Mono', monospace; font-size: 0.85rem; position: sticky; top: 80px;
+    min-height: 280px;
+  }
+  .attr-preview h4 { font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  .attr-code-line { margin: 4px 0; line-height: 1.8; }
+  .highlight-attr { background: rgba(245,166,35,0.25); border-radius: 3px; padding: 0 3px; color: var(--amber); }
+  .highlight-val { color: var(--accent2); }
+  .attr-explanation { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); font-family: 'Lora', serif; font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+  /* Preguntas */
+  .Preguntas-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; max-width: 700px; }
+  .Preguntas-q { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; }
+  .Preguntas-opts { display: flex; flex-direction: column; gap: 10px; }
+  .Preguntas-opt {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 18px;
+    font-family: 'DM Mono', monospace; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; text-align: left;
+  }
+  .Preguntas-opt:hover { border-color: var(--accent); background: rgba(124,111,255,0.06); }
+  .Preguntas-opt.correct { border-color: var(--accent2); background: rgba(0,212,170,0.1); color: var(--accent2); }
+  .Preguntas-opt.wrong { border-color: var(--accent3); background: rgba(255,107,107,0.1); color: var(--accent3); }
+  .Preguntas-feedback { margin-top: 1rem; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; display: none; }
+  .Preguntas-feedback.show { display: block; }
+  .Preguntas-feedback.ok { background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.3); color: var(--accent2); }
+  .Preguntas-feedback.err { background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.3); color: var(--accent3); }
+  .Preguntas-nav { display: flex; gap: 12px; margin-top: 1.5rem; align-items: center; }
+  .Preguntas-counter { font-family: 'Syne', sans-serif; font-size: 0.8rem; color: var(--muted); flex: 1; }
+  .Preguntas-score { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 2rem; text-align: center; padding: 2rem; }
+
+  /* LIVE EDITOR */
+  .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; height: 420px; }
+  textarea.code-input {
+    background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius);
+    color: var(--accent2); font-family: 'DM Mono', monospace; font-size: 0.82rem; line-height: 1.7;
+    padding: 1.25rem; resize: none; width: 100%; height: 100%; outline: none; transition: border-color 0.2s;
+  }
+  textarea.code-input:focus { border-color: var(--accent); }
+  .preview-frame { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); width: 100%; height: 100%; overflow: hidden; }
+  .preview-frame iframe { width: 100%; height: 100%; border: none; }
+  .editor-header { font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+
+  /* PROGRESS */
+  .progress-bar { position: fixed; top: 60px; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.05); z-index: 99; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.3s; }
+
+  /* SCROLLED DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+  @media (max-width: 650px) {
+    .attr-visual, .editor-grid { grid-template-columns: 1fr; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .tags-grid { grid-template-columns: 1fr; }
+    .attr-preview { position: static; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">&#60;HTML&#47;&#62;</div>
+  <div class="nav-pills">
+    <a class="nav-pill active" href="#inicio">Inicio</a>
+    <a class="nav-pill" href="#estructura">CE1.1</a>
+    <a class="nav-pill" href="#etiquetas">CE1.2</a>
+    <a class="nav-pill" href="#atributos">Atributos</a>
+    <a class="nav-pill" href="#editor">Editor</a>
+    <a class="nav-pill" href="#Preguntas">Preguntas</a>
+  <a class="nav-pill" href="https://www.youtube.com/watch?v=MJkdaVFHrto" target="_blank" title="YouTube">▶ YouTube</a>
+  <a class="nav-pill" href="https://developer.mozilla.org/es/docs/Web/HTML/Reference/Elements" target="_blank" title="MDN">📖 MDN</a>
+  </div>
+</nav>
+
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+<!-- SLIDE 0: HERO -->
+<section id="inicio" class="hero">
+  <div class="hero-badge">&#9679;&nbsp; Lenguajes de Marcas · Módulo 1</div>
+  <h1>Estructura y Etiquetas<br><span>de HTML</span></h1>
+  <p class="hero-sub">Aprende a identificar la estructura de una página web y a usar etiquetas y atributos para dar formato a documentos.</p>
+  <div class="hero-ctas">
+    <a class="btn btn-primary" href="#estructura">Empezar ↓</a>
+    <a class="btn btn-outline" href="#Preguntas">Ir al Preguntas</a>
+  </div>
+  <div class="hero-grid">
+    <div class="hero-chip"><div class="chip-dot purple"></div>CE1.1 — Estructura de una página</div>
+    <div class="hero-chip"><div class="chip-dot teal"></div>CE1.2 — Etiquetas y atributos</div>
+    <div class="hero-chip"><div class="chip-dot amber"></div>Editor en vivo interactivo</div>
+    <div class="hero-chip"><div class="chip-dot red"></div>Preguntas de autoevaluación</div>
+  </div>
+</section>
+
+<!-- SLIDE 1: CE1.1 ESTRUCTURA -->
+<section id="estructura">
+  <div class="section-tag">CE 1.1 — Criterio de Evaluación</div>
+  <h2 class="section-title">Estructura de una página web</h2>
+  <p class="section-desc">Todo documento HTML sigue una estructura jerárquica (árbol) formada por elementos anidados. Pasa el cursor sobre cada línea para conocer su función.</p>
+
+  <div class="tree-container" id="tree" style="padding-top: 3rem;">
+    <div id="tooltip" class="tree-tooltip"></div>
+    <div class="tree-line" data-tip="Declaración de tipo de documento. Le dice al navegador que es HTML5.">
+      <span class="t-tag">&lt;!DOCTYPE html&gt;</span>
+    </div>
+    <div class="tree-line" data-tip="Elemento raíz. Contiene todo el documento HTML. El atributo lang indica el idioma.">
+      <span class="t-tag">&lt;html</span>&nbsp;<span class="t-attr">lang</span>=<span class="t-val">"es"</span><span class="t-tag">&gt;</span>
+    </div>
+
+    <div class="tree-line indent-1" data-tip="Cabecera del documento. Contiene metadatos que no se muestran en pantalla (título, codificación, estilos).">
+      <span class="t-tag">&lt;head&gt;</span>
+    </div>
+    <div class="tree-line indent-2" data-tip="Define la codificación de caracteres. UTF-8 permite usar tildes, ñ y otros caracteres especiales.">
+      <span class="t-tag">&lt;meta</span>&nbsp;<span class="t-attr">charset</span>=<span class="t-val">"UTF-8"</span>&nbsp;<span class="t-tag">/&gt;</span>
+    </div>
+    <div class="tree-line indent-2" data-tip="El título que aparece en la pestaña del navegador y en los resultados de búsqueda.">
+      <span class="t-tag">&lt;title&gt;</span><span class="t-text">Mi primera página</span><span class="t-tag">&lt;/title&gt;</span>
+    </div>
+    <div class="tree-line indent-2" data-tip="Enlaza una hoja de estilos CSS externa para dar formato visual a la página.">
+      <span class="t-tag">&lt;link</span>&nbsp;<span class="t-attr">rel</span>=<span class="t-val">"stylesheet"</span>&nbsp;<span class="t-attr">href</span>=<span class="t-val">"estilos.css"</span>&nbsp;<span class="t-tag">/&gt;</span>
+    </div>
+    <div class="tree-line indent-1" data-tip="Cierre de la etiqueta head.">
+      <span class="t-tag">&lt;/head&gt;</span>
+    </div>
+
+    <div class="tree-line indent-1" data-tip="Cuerpo del documento. Aquí va TODO el contenido visible de la página.">
+      <span class="t-tag">&lt;body&gt;</span>
+    </div>
+    <div class="tree-line indent-2" data-tip="Encabezado de nivel 1 — el título principal de la página. Solo debe haber uno por página.">
+      <span class="t-tag">&lt;h1&gt;</span><span class="t-text">Bienvenido</span><span class="t-tag">&lt;/h1&gt;</span>
+    </div>
+    <div class="tree-line indent-2" data-tip="Párrafo de texto. El elemento más común para escribir contenido en HTML.">
+      <span class="t-tag">&lt;p&gt;</span><span class="t-text">Este es un párrafo.</span><span class="t-tag">&lt;/p&gt;</span>
+    </div>
+    <div class="tree-line indent-2" data-tip="Enlace (hipervínculo). El atributo href indica la dirección de destino.">
+      <span class="t-tag">&lt;a</span>&nbsp;<span class="t-attr">href</span>=<span class="t-val">"otra.html"</span><span class="t-tag">&gt;</span><span class="t-text">Ir a otra página</span><span class="t-tag">&lt;/a&gt;</span>
+    </div>
+    <div class="tree-line indent-1" data-tip="Cierre del body. Todo el contenido visible debe ir antes de este cierre.">
+      <span class="t-tag">&lt;/body&gt;</span>
+    </div>
+    <div class="tree-line" data-tip="Cierre del elemento html. Siempre es la última línea del documento.">
+      <span class="t-tag">&lt;/html&gt;</span>
+    </div>
+  </div>
+
+  <div style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem;">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;margin-bottom:0.4rem;">&#60;!DOCTYPE&#62;</div>
+      <div style="font-size:0.82rem;color:var(--muted);line-height:1.5">Declaración de versión HTML. Siempre la primera línea.</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem;">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;margin-bottom:0.4rem;">&#60;head&#62;</div>
+      <div style="font-size:0.82rem;color:var(--muted);line-height:1.5">Cabecera con metadatos. No visible en pantalla.</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem;">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;margin-bottom:0.4rem;">&#60;body&#62;</div>
+      <div style="font-size:0.82rem;color:var(--muted);line-height:1.5">Cuerpo con contenido visible. Lo que ve el usuario.</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem;">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;margin-bottom:0.4rem;">Anidamiento</div>
+      <div style="font-size:0.82rem;color:var(--muted);line-height:1.5">Las etiquetas se abren y cierran en orden correcto.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 2: CE1.2 ETIQUETAS -->
+<section id="etiquetas">
+  <div class="section-tag">CE 1.2 — Criterio de Evaluación</div>
+  <h2 class="section-title">Etiquetas de formato</h2>
+  <p class="section-desc">Las etiquetas HTML definen la función de cada elemento. Haz clic en cada tarjeta para ver un ejemplo.</p>
+
+  <div class="tags-grid" id="tagsGrid">
+  </div>
+</section>
+
+<!-- SLIDE 3: ATRIBUTOS -->
+<section id="atributos">
+  <div class="section-tag">CE 1.2 — Atributos</div>
+  <h2 class="section-title">Atributos de las etiquetas</h2>
+  <p class="section-desc">Los atributos aportan información adicional a las etiquetas. Se escriben en la etiqueta de apertura con el formato <code style="color:var(--amber);font-family:'DM Mono',monospace">nombre="valor"</code>. Selecciona un atributo para ver cómo funciona.</p>
+
+  <div class="attr-visual">
+    <div class="attr-list" id="attrList"></div>
+    <div class="attr-preview" id="attrPreview">
+      <h4>Selecciona un atributo →</h4>
+      <p style="color:var(--muted);font-size:0.85rem;font-family:'Lora',serif;margin-top:1rem;line-height:1.6">Haz clic en cualquier atributo de la izquierda para ver su sintaxis y descripción aquí.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: EDITOR EN VIVO -->
+<section id="editor">
+  <div class="section-tag">Práctica Interactiva</div>
+  <h2 class="section-title">Editor en vivo</h2>
+  <p class="section-desc">Escribe HTML en el panel izquierdo y observa el resultado en tiempo real. ¡Experimenta con las etiquetas!</p>
+
+  <div class="editor-grid">
+    <div>
+      <div class="editor-header">&#9998; Tu código HTML</div>
+      <textarea class="code-input" id="codeEditor" spellcheck="false"></textarea>
+    </div>
+    <div>
+      <div class="editor-header">&#9654; Vista previa</div>
+      <div class="preview-frame"><iframe id="previewFrame" sandbox="allow-scripts"></iframe></div>
+    </div>
+  </div>
+  <div style="margin-top:1rem;display:flex;gap:8px;flex-wrap:wrap;">
+    <button class="btn btn-outline" style="font-size:0.78rem;padding:8px 14px" onclick="insertSnippet('h1')">+ h1</button>
+    <button class="btn btn-outline" style="font-size:0.78rem;padding:8px 14px" onclick="insertSnippet('p')">+ párrafo</button>
+    <button class="btn btn-outline" style="font-size:0.78rem;padding:8px 14px" onclick="insertSnippet('a')">+ enlace</button>
+    <button class="btn btn-outline" style="font-size:0.78rem;padding:8px 14px" onclick="insertSnippet('img')">+ imagen</button>
+    <button class="btn btn-outline" style="font-size:0.78rem;padding:8px 14px" onclick="insertSnippet('ul')">+ lista</button>
+    <button class="btn btn-outline" style="font-size:0.78rem;padding:8px 14px" onclick="insertSnippet('table')">+ tabla</button>
+    <button class="btn btn-outline" style="font-size:0.78rem;padding:8px 14px;margin-left:auto" onclick="resetEditor()">↺ Reiniciar</button>
+  </div>
+</section>
+
+<!-- SLIDE 5: Preguntas -->
+<section id="Preguntas">
+  <div class="section-tag">Autoevaluación</div>
+  <h2 class="section-title">Preguntas de repaso</h2>
+  <p class="section-desc">Pon a prueba lo aprendido. 8 preguntas sobre estructura HTML, etiquetas y atributos.</p>
+  <div class="Preguntas-box" id="PreguntasBox"></div>
+</section>
+
+<script>
+// === TOOLTIP TREE ===
+const tree = document.getElementById('tree');
+const tooltip = document.getElementById('tooltip');
+tree.querySelectorAll('[data-tip]').forEach(el => {
+  el.addEventListener('mousemove', e => {
+    tooltip.textContent = el.dataset.tip;
+    tooltip.style.opacity = '1';
+    const r = tree.getBoundingClientRect();
+    let x = e.clientX - r.left + 12, y = e.clientY - r.top - 40;
+    if (x + 240 > r.width) x = r.width - 240;
+    tooltip.style.left = x + 'px';
+    tooltip.style.top = y + 'px';
+  });
+  el.addEventListener('mouseleave', () => { tooltip.style.opacity = '0'; });
+});
+
+// === TAGS DATA ===
+const tags = [
+  { label:'<h1>…<h6>', name:'Encabezados', desc:'Definen títulos de nivel 1 a 6. h1 es el más importante y h6 el menor.', ex:'<h2 style="color:#7c6fff">Soy un h2</h2>' },
+  { label:'<p>', name:'Párrafo', desc:'Agrupa texto en un bloque de párrafo. El navegador añade espacio antes y después.', ex:'<p>Este es un párrafo de texto.</p>' },
+  { label:'<a>', name:'Enlace (hipervínculo)', desc:'Crea un enlace a otra página o recurso. Usa el atributo href para la dirección.', ex:'<a href="#">Haz clic aquí</a>' },
+  { label:'<img>', name:'Imagen', desc:'Inserta una imagen. No tiene etiqueta de cierre. Requiere src y alt.', ex:'<img src="foto.jpg" alt="Descripción" />' },
+  { label:'<ul> / <ol>', name:'Listas', desc:'ul crea una lista sin orden (viñetas). ol crea una lista ordenada (números).', ex:'<ul><li>Elemento A</li><li>Elemento B</li></ul>' },
+  { label:'<table>', name:'Tabla', desc:'Estructura datos en filas (tr) y celdas (td / th). th es la celda de cabecera.', ex:'<table border="1"><tr><th>Nombre</th><th>Edad</th></tr><tr><td>Ana</td><td>20</td></tr></table>' },
+  { label:'<div>', name:'División (bloque)', desc:'Contenedor genérico de bloque. Se usa para agrupar y aplicar estilos con CSS.', ex:'<div style="background:#7c6fff22;padding:12px">Soy un div</div>' },
+  { label:'<span>', name:'División (en línea)', desc:'Contenedor genérico en línea. Se usa para estilizar partes de texto.', ex:'<p>Texto <span style="color:red">rojo</span> en línea.</p>' },
+  { label:'<strong> / <em>', name:'Énfasis de texto', desc:'strong pone el texto en negrita. em lo pone en cursiva. Ambos tienen valor semántico.', ex:'<p><strong>Negrita</strong> y <em>cursiva</em>.</p>' },
+  { label:'<form>', name:'Formulario', desc:'Contenedor para controles de entrada de datos (input, select, textarea, button).', ex:'<form><input type="text" placeholder="Tu nombre"><button>Enviar</button></form>' },
+];
+
+const grid = document.getElementById('tagsGrid');
+tags.forEach((t, i) => {
+  const d = document.createElement('div');
+  d.className = 'tag-card';
+  d.innerHTML = `<div class="tag-label">${t.label}</div><div class="tag-name">${t.name}</div><div class="tag-desc">${t.desc}</div><div class="tag-example"><div class="mini-code">${t.ex.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;
+  d.onclick = () => { d.classList.toggle('active'); };
+  grid.appendChild(d);
+});
+
+// === ATRIBUTOS DATA ===
+const attrs = [
+  { name:'href', tag:'<a>', title:'Dirección del enlace',
+    code: `&lt;<span style="color:var(--accent3)">a</span> <span class="highlight-attr">href</span>=<span class="highlight-val">"https://miweb.es"</span>&gt;\n  Visitar web\n&lt;/a&gt;`,
+    exp:'Define la URL a la que apunta el enlace. Puede ser una URL completa, una ruta relativa o un ancla (#seccion).' },
+  { name:'src', tag:'<img>', title:'Fuente del recurso',
+    code: `&lt;<span style="color:var(--accent3)">img</span>\n  <span class="highlight-attr">src</span>=<span class="highlight-val">"foto.jpg"</span>\n  alt="Una foto"\n/&gt;`,
+    exp:'Indica la ruta o URL de la imagen (o script) que se cargará. Es obligatorio en img y script.' },
+  { name:'alt', tag:'<img>', title:'Texto alternativo',
+    code: `&lt;<span style="color:var(--accent3)">img</span>\n  src="gato.jpg"\n  <span class="highlight-attr">alt</span>=<span class="highlight-val">"Gato durmiendo"</span>\n/&gt;`,
+    exp:'Texto descriptivo que se muestra si la imagen no carga. Es fundamental para la accesibilidad y el SEO.' },
+  { name:'class', tag:'global', title:'Clase CSS',
+    code: `&lt;<span style="color:var(--accent3)">p</span> <span class="highlight-attr">class</span>=<span class="highlight-val">"destacado grande"</span>&gt;\n  Texto con estilo\n&lt;/p&gt;`,
+    exp:'Asigna una o varias clases CSS al elemento para aplicarle estilos. Un elemento puede tener múltiples clases separadas por espacios.' },
+  { name:'id', tag:'global', title:'Identificador único',
+    code: `&lt;<span style="color:var(--accent3)">div</span> <span class="highlight-attr">id</span>=<span class="highlight-val">"encabezado"</span>&gt;\n  Cabecera principal\n&lt;/div&gt;`,
+    exp:'Identificador único del elemento en la página. No puede repetirse. Se usa para anclar, seleccionar en JS o aplicar CSS específico.' },
+  { name:'style', tag:'global', title:'Estilos en línea',
+    code: `&lt;<span style="color:var(--accent3)">h1</span> <span class="highlight-attr">style</span>=<span class="highlight-val">"color:blue;\n      font-size:32px"</span>&gt;\n  Título\n&lt;/h1&gt;`,
+    exp:'Permite escribir CSS directamente en el elemento. Útil para estilos rápidos, pero es mejor usar clases en archivos CSS separados.' },
+  { name:'type', tag:'<input>', title:'Tipo de control',
+    code: `&lt;<span style="color:var(--accent3)">input</span>\n  <span class="highlight-attr">type</span>=<span class="highlight-val">"email"</span>\n  placeholder="Tu email"\n/&gt;`,
+    exp:'Indica el tipo de campo de formulario: text, email, password, number, checkbox, radio, date… Cambia la validación y el teclado en móvil.' },
+  { name:'target', tag:'<a>', title:'Dónde abre el enlace',
+    code: `&lt;<span style="color:var(--accent3)">a</span>\n  href="miweb.es"\n  <span class="highlight-attr">target</span>=<span class="highlight-val">"_blank"</span>&gt;\n  Abrir en nueva pestaña\n&lt;/a&gt;`,
+    exp:'Define dónde se abre el enlace. _blank = nueva pestaña, _self = misma ventana (predeterminado), _parent, _top para marcos.' },
+];
+
+const attrList = document.getElementById('attrList');
+const attrPrev = document.getElementById('attrPreview');
+attrs.forEach((a, i) => {
+  const d = document.createElement('div');
+  d.className = 'attr-item';
+  d.innerHTML = `<div class="attr-head"><span class="attr-tag">${a.name}</span><span style="font-size:0.75rem;color:var(--muted)">${a.tag}</span></div><div class="attr-title-text" style="margin-top:6px;font-size:0.85rem">${a.title}</div>`;
+  d.onclick = () => {
+    attrList.querySelectorAll('.attr-item').forEach(x => x.classList.remove('sel'));
+    d.classList.add('sel');
+    attrPrev.innerHTML = `<h4>${a.name} — ${a.title}</h4><div class="attr-code-line" style="white-space:pre;line-height:1.9">${a.code}</div><div class="attr-explanation">${a.exp}</div>`;
+  };
+  attrList.appendChild(d);
+});
+
+// === LIVE EDITOR ===
+const defaultCode = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi página</title>
+  <style>
+    body { font-family: sans-serif; padding: 16px; }
+    h1   { color: #7c6fff; }
+    p    { color: #444; }
+  </style>
+</head>
+<body>
+  <h1>¡Hola mundo!</h1>
+  <p>Este es mi primer párrafo en <strong>HTML</strong>.</p>
+  <a href="#">Un enlace de ejemplo</a>
+</body>
+</html>`;
+
+const editor = document.getElementById('codeEditor');
+const frame  = document.getElementById('previewFrame');
+editor.value = defaultCode;
+
+function updatePreview() {
+  const doc = frame.contentDocument || frame.contentWindow.document;
+  doc.open(); doc.write(editor.value); doc.close();
+}
+editor.addEventListener('input', updatePreview);
+updatePreview();
+
+function insertSnippet(type) {
+  const snippets = {
+    h1: '\n<h1>Mi título principal</h1>',
+    p:  '\n<p>Un párrafo de texto.</p>',
+    a:  '\n<a href="#">Texto del enlace</a>',
+    img:'\n<img src="https://placekitten.com/200/120" alt="Un gatito" />',
+    ul: '\n<ul>\n  <li>Elemento 1</li>\n  <li>Elemento 2</li>\n  <li>Elemento 3</li>\n</ul>',
+    table:'\n<table border="1" cellpadding="6">\n  <tr><th>Nombre</th><th>Nota</th></tr>\n  <tr><td>Ana</td><td>9</td></tr>\n  <tr><td>Luis</td><td>8</td></tr>\n</table>',
+  };
+  editor.value += snippets[type] || '';
+  updatePreview();
+  editor.scrollTop = editor.scrollHeight;
+}
+
+function resetEditor() { editor.value = defaultCode; updatePreview(); }
+
+// === Preguntas ===
+const questions = [
+  { q:'¿Cuál es la etiqueta que contiene TODO el contenido visible de una página HTML?', opts:['<head>','<html>','<body>','<main>'], ans:2, exp:'El elemento <body> contiene todo lo visible. <head> tiene metadatos no visibles.' },
+  { q:'¿Cuántas veces puede aparecer el elemento <h1> por buenas prácticas en una página?', opts:['Tantas veces como se quiera','Una sola vez','Dos veces como máximo','Ninguna, está obsoleto'], ans:1, exp:'Por SEO y accesibilidad, debe haber un único <h1> por página, que actúa como título principal.' },
+  { q:'¿Qué atributo es obligatorio en la etiqueta <img> para la accesibilidad?', opts:['src','href','alt','title'], ans:2, exp:'alt proporciona texto alternativo para lectores de pantalla y cuando la imagen no carga.' },
+  { q:'¿Cuál es la declaración que siempre va en la primera línea de un documento HTML5?', opts:['<html lang="es">','<?xml version="1.0">','<!DOCTYPE html>','<!-- HTML5 -->'], ans:2, exp:'<!DOCTYPE html> le dice al navegador que el documento usa HTML5.' },
+  { q:'¿Qué diferencia hay entre <strong> y <em>?', opts:['Ninguna, son sinónimos','strong = negrita (importancia), em = cursiva (énfasis)','strong = cursiva, em = negrita','Solo se usan dentro de formularios'], ans:1, exp:'<strong> marca texto de gran importancia (negrita) y <em> marca énfasis (cursiva). Ambos tienen significado semántico.' },
+  { q:'¿Cuál es el atributo que define a dónde va un enlace <a>?', opts:['src','href','url','link'], ans:1, exp:'El atributo href (Hypertext REFerence) contiene la URL de destino del enlace.' },
+  { q:'¿Dentro de qué sección del HTML se coloca la etiqueta <title>?', opts:['<body>','<header>','<head>','<html>'], ans:2, exp:'<title> va dentro de <head> porque es un metadato del documento, no contenido visible.' },
+  { q:'Si quiero aplicar un estilo a varios elementos usando CSS, ¿qué atributo uso?', opts:['id','class','style','name'], ans:1, exp:'class permite asignar la misma clase a múltiples elementos y aplicarles el mismo estilo CSS.' },
+];
+
+let qIdx = 0, score = 0, answered = false;
+
+function renderPreguntas() {
+  const box = document.getElementById('PreguntasBox');
+  if (qIdx >= questions.length) {
+    box.innerHTML = `<div class="Preguntas-score" style="color:var(--accent2)">${score}/${questions.length}</div>
+      <p style="text-align:center;color:var(--muted);margin-top:0.5rem">${score >= 6 ? '¡Excelente trabajo! 🎉' : score >= 4 ? 'Bien, pero repasa un poco más.' : 'Revisa el material e inténtalo de nuevo.'}</p>
+      <div style="text-align:center;margin-top:1.5rem"><button class="btn btn-primary" onclick="qIdx=0;score=0;answered=false;renderPreguntas()">↺ Repetir Preguntas</button></div>`;
+    return;
+  }
+  const q = questions[qIdx];
+  box.innerHTML = `<div class="Preguntas-q">Pregunta ${qIdx+1} de ${questions.length}: ${q.q}</div>
+    <div class="Preguntas-opts">${q.opts.map((o,i)=>`<button class="Preguntas-opt" onclick="answer(${i})">${o}</button>`).join('')}</div>
+    <div class="Preguntas-feedback" id="qfb"></div>
+    <div class="Preguntas-nav"><span class="Preguntas-counter">Puntuación: ${score}/${qIdx}</span><button class="btn btn-outline" id="nextBtn" style="display:none" onclick="qIdx++;answered=false;renderPreguntas()">Siguiente →</button></div>`;
+}
+
+function answer(i) {
+  if (answered) return;
+  answered = true;
+  const q = questions[qIdx];
+  const opts = document.querySelectorAll('.Preguntas-opt');
+  opts.forEach((o,j) => { if(j===q.ans) o.classList.add('correct'); else if(j===i && i!==q.ans) o.classList.add('wrong'); o.disabled=true; });
+  const fb = document.getElementById('qfb');
+  if (i === q.ans) { score++; fb.textContent = '✓ Correcto — ' + q.exp; fb.className='Preguntas-feedback show ok'; }
+  else { fb.textContent = '✗ Incorrecto — ' + q.exp; fb.className='Preguntas-feedback show err'; }
+  document.getElementById('nextBtn').style.display = 'block';
+}
+
+renderPreguntas();
+
+// === NAV ACTIVE + PROGRESS ===
+const sections = document.querySelectorAll('section');
+const pills = document.querySelectorAll('.nav-pill');
+const prog = document.getElementById('progress');
+
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY;
+  const total = document.body.scrollHeight - window.innerHeight;
+  prog.style.width = (scrolled / total * 100) + '%';
+
+  let current = '';
+  sections.forEach(s => { if (scrolled >= s.offsetTop - 200) current = s.id; });
+  pills.forEach(p => { p.classList.toggle('active', p.getAttribute('href') === '#' + current); });
+});
+</script>
+</body>
+</html>
